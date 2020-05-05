@@ -9,7 +9,7 @@ class Backtester(object):
         self.nv = None
 
     def run(self, signal):
-        ret = np.diff(self.data, axis=0)
+        ret = np.diff(self.data, axis=0) / self.data[:-1, :]
         ret = ret * signal
         self.ret = ret
         ret = ret.sum(axis=1) + 1
@@ -36,6 +36,12 @@ class Backtester(object):
             data_1 = raw_data[-1][1][()]
 
             self.data = data_1[151000:200000, [0, 2]]
+
+            self.data[:, 0] *= 7.305569721
+            self.data[:, 0] += 329.8444727
+
+            self.data[:, 1] *= 5.271191298
+            self.data[:, 1] += 334.5558983
 
 
 if __name__ == '__main__':
