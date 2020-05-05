@@ -1,34 +1,33 @@
-from data_loader.simple_mnist_data_loader import SimpleMnistDataLoader
-from models.simple_mnist_model import SimpleMnistModel
-from trainers.simple_mnist_trainer import SimpleMnistModelTrainer
-from utils.config import process_config
-from utils.dirs import create_dirs
-from utils.utils import get_args
+from data_loader.data_loader import DataLoader
+from models.hft_model import LSTM_HFT
+
+import h5py
+
 
 def main():
-    # capture the config path from the run arguments
-    # then process the json configuration file
-    try:
-        args = get_args()
-        config = process_config(args.config)
-    except:
-        print("missing or invalid arguments")
-        exit(0)
+    data_loader = DataLoader({"LOOKBACK": 1000, "LOOKAHEAD": 1})
+    data_loader.load_data("data/TSLA0107to0108.h5")
+    data_loader.organize_data()
 
-    # create the experiments dirs
-    create_dirs([config.callbacks.tensorboard_log_dir, config.callbacks.checkpoint_dir])
+    with h5py.File('timeseriesdataset.hdf5', 'w') as f:
+        x_dset = f.create_dataset('processed_data',
+                                  (data_loader.X.shape[0], data_loader.X.shape[1], data_loader.X.shape[2]),
+                                  dtype='float64', data=data_loader.X)
+        y_dset = f.create_dataset('processed_label',
+                                  (data_loader.y.shape[0], data_loader.y.shape[1], data_loader.y.shape[2]),
+                                  dtype='float64', data=data_loader.y)
 
-    print('Create the data generator.')
-    data_loader = SimpleMnistDataLoader(config)
+    validation_size = test_size = int(.2 * len(data_loader.X))
+    data_loader.split_data(validation_size, test_size)
 
-    print('Create the model.')
-    model = SimpleMnistModel(config)
+    model = LSTM_HFT({"LOOKBACK": data_loader.lookback, 'num_col': len(data_loader.columns)})
+    model.fit(data_loader.X_train, data_loader.y_train, data_loader.X_val, data_loader.y_val)
 
-    print('Create the trainer')
-    trainer = SimpleMnistModelTrainer(model.model, data_loader.get_train_data(), config)
+    model.evaluate(data_loader.X_test, data_loader.y_test)
 
-    print('Start training the model.')
-    trainer.train()
+    model.plot_model()
+
+    model.predict(data_loader.X_test)
 
 
 if __name__ == '__main__':
