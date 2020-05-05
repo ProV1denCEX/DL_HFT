@@ -7,15 +7,7 @@ import numpy as np
 from keras.models import load_model
 import h5py
 from multiprocessing import Process, Queue
-
-
-def chunks(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
-
-
-def queue_wrapper(queue, f, index, *args):
-    queue.put((f(*args), index))
+from utils.utils import chunks, queue_wrapper
 
 
 def load_data(path):
