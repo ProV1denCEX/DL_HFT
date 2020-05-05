@@ -10,10 +10,10 @@ def main():
     data_loader.organize_data()
 
     with h5py.File('timeseriesdataset.hdf5', 'w') as f:
-        x_dset = f.create_dataset('processed_data',
+        f.create_dataset('processed_data',
                                   (data_loader.X.shape[0], data_loader.X.shape[1], data_loader.X.shape[2]),
                                   dtype='float64', data=data_loader.X)
-        y_dset = f.create_dataset('processed_label',
+        f.create_dataset('processed_label',
                                   (data_loader.y.shape[0], data_loader.y.shape[1], data_loader.y.shape[2]),
                                   dtype='float64', data=data_loader.y)
 

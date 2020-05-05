@@ -109,8 +109,8 @@ if __name__ == '__main__':
     data_loader.organize_data()
 
     with h5py.File('timeseriesdataset.hdf5', 'w') as f:
-        x_dset = f.create_dataset('processed_data', (data_loader.X.shape[0], data_loader.X.shape[1], data_loader.X.shape[2]), dtype='float64', data=data_loader.X)
-        y_dset = f.create_dataset('processed_label', (data_loader.y.shape[0], data_loader.y.shape[1], data_loader.y.shape[2]), dtype='float64', data=data_loader.y)
+        f.create_dataset('processed_data', (data_loader.X.shape[0], data_loader.X.shape[1], data_loader.X.shape[2]), dtype='float64', data=data_loader.X)
+        f.create_dataset('processed_label', (data_loader.y.shape[0], data_loader.y.shape[1], data_loader.y.shape[2]), dtype='float64', data=data_loader.y)
 
     test_size = int(.5 * len(data_loader.X))
     validation_size = int(.2 * .5 * len(data_loader.X))
