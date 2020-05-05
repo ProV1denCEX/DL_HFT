@@ -3,9 +3,9 @@ import os
 from keras.callbacks import ModelCheckpoint, TensorBoard
 
 
-class SimpleMnistModelTrainer(BaseTrain):
+class Trainer(BaseTrain):
     def __init__(self, model, data, config):
-        super(SimpleMnistModelTrainer, self).__init__(model, data, config)
+        super(Trainer, self).__init__(model, data, config)
         self.callbacks = []
         self.loss = []
         self.acc = []
