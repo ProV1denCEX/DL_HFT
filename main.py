@@ -27,7 +27,7 @@ def main():
 
     model.plot_model()
 
-
+    model.predict(data_loader.X_test)
 
 
 if __name__ == '__main__':
