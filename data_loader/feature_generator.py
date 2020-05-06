@@ -78,7 +78,10 @@ class FeatureGenerator(object):
             by=[self.data.index.day]).cumsum()
 
     def standardize(self):
-        self.data = (self.data - self.data.mean()) / self.data.std()  # standardize the data
+        self.data = (self.data - self.data.mean()) / self.data.std()  # standardize the data‘
+
+    def normalize(self):
+        self.data = (self.data - self.data.min()) / (self.data.max() - self.data.min())
 
     def direction(self):
         # data['BidTemp'] = np.nan
@@ -132,6 +135,6 @@ if __name__ == '__main__':
     feature.bid_ask_balance()
     feature.TWAP()
     feature.VWAP()
-    feature.standardize()
+    feature.normalize()
     feature.data.to_hdf('TSLA0107to0108.h5', complib='zlib', complevel=9, key='Jan')
 
